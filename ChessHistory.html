@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chess History Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 800px;
+    }
+    h1 { color: #2c3e50; }
+    .question {
+      margin-bottom: 20px;
+      padding: 10px;
+      border-radius: 6px;
+    }
+    .correct {
+      background-color: #e0f8e0;
+    }
+    .incorrect {
+      background-color: #fdd;
+    }
+    .correct-answer {
+      font-weight: bold;
+      color: green;
+    }
+    .wrong-answer {
+      font-weight: bold;
+      color: red;
+    }
+    .choices label {
+      display: block;
+      margin-left: 20px;
+    }
+    #score {
+      margin-top: 30px;
+      font-weight: bold;
+      font-size: 1.2em;
+      color: #333;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chess History Quiz</h1>
+  <form id="quizForm"></form>
+  <button type="button" onclick="submitQuiz()">Submit Quiz</button>
+  <div id="score"></div>
+
+  <script>
+    const questions = [
+      { q: "1. Who is known as the 'father of modern chess'?", a: ['A. Garry Kasparov', 'B. Bobby Fischer', 'C. Wilhelm Steinitz', 'D. Paul Morphy', 'E. Emanuel Lasker'], correct: 'C' },
+      { q: "2. In what century did chess originate?", a: ['A. 2nd century', 'B. 6th century', 'C. 10th century', 'D. 13th century', 'E. 15th century'], correct: 'B' },
+      { q: "3. What is the name of the first official World Chess Champion?", a: ['A. Bobby Fischer', 'B. Mikhail Botvinnik', 'C. José Raúl Capablanca', 'D. Wilhelm Steinitz', 'E. Alexander Alekhine'], correct: 'D' },
+      { q: "4. Which country did chess originate from?", a: ['A. China', 'B. India', 'C. Persia', 'D. Egypt', 'E. Greece'], correct: 'B' },
+      { q: "5. Which grandmaster lost to IBM's Deep Blue in 1997?", a: ['A. Anatoly Karpov', 'B. Garry Kasparov', 'C. Bobby Fischer', 'D. Vladimir Kramnik', 'E. Magnus Carlsen'], correct: 'B' },
+      { q: "6. Who was World Champion immediately before Magnus Carlsen?", a: ['A. Vladimir Kramnik', 'B. Viswanathan Anand', 'C. Garry Kasparov', 'D. Anatoly Karpov', 'E. Boris Spassky'], correct: 'B' },
+      { q: "7. What year was the first official FIDE World Chess Championship held?", a: ['A. 1886', 'B. 1924', 'C. 1948', 'D. 1972', 'E. 2000'], correct: 'C' },
+      { q: "8. Who was the first non-European to become World Chess Champion?", a: ['A. Viswanathan Anand', 'B. Bobby Fischer', 'C. José Raúl Capablanca', 'D. Paul Morphy', 'E. Emanuel Lasker'], correct: 'B' },
+      { q: "9. What was the Cold War-era match featuring Fischer vs. Spassky called?", a: ['A. The Clash of Kings', 'B. The Iceland Showdown', 'C. The Match of the Century', 'D. The Iron Curtain Game', 'E. Reykjavik Rumble'], correct: 'C' },
+      { q: "10. Who holds the record for the longest unbeaten streak in classical chess (as of 2024)?", a: ['A. Ding Liren', 'B. Bobby Fischer', 'C. Magnus Carlsen', 'D. Hikaru Nakamura', 'E. Fabiano Caruana'], correct: 'C' },
+      { q: "11. Who was the youngest World Chess Champion as of 2024?", a: ['A. Bobby Fischer', 'B. Magnus Carlsen', 'C. Garry Kasparov', 'D. José Raúl Capablanca', 'E. Anatoly Karpov'], correct: 'C' },
+      { q: "12. Which player was undefeated in tournament play from 1916 to 1924?", a: ['A. Capablanca', 'B. Alekhine', 'C. Lasker', 'D. Morphy', 'E. Steinitz'], correct: 'A' },
+      { q: "13. What is the name of the famous 1851 game between Anderssen and Kieseritzky?", a: ['A. Immortal Match', 'B. Evergreen Game', 'C. Game of the Century', 'D. King\'s Revenge', 'E. Queen\'s Trap'], correct: 'A' },
+      { q: "14. Who was the first woman to earn the Grandmaster title (not WGM)?", a: ['A. Judit Polgar', 'B. Nona Gaprindashvili', 'C. Maia Chiburdanidze', 'D. Pia Cramling', 'E. Hou Yifan'], correct: 'B' },
+      { q: "15. Which Soviet player was World Champion the longest?", a: ['A. Botvinnik', 'B. Karpov', 'C. Kasparov', 'D. Smyslov', 'E. Spassky'], correct: 'C' },
+      { q: "16. What chess variant did Bobby Fischer promote to reduce memorization?", a: ['A. Blitz Chess', 'B. Rapid Chess', 'C. Chess960', 'D. Crazyhouse', 'E. Bughouse'], correct: 'C' },
+      { q: "17. What is the oldest known chess manual?", a: ['A. Repetición de Amores', 'B. Lucena Manuscript', 'C. Codex Madrid', 'D. Libro de los Juegos', 'E. De Ludo Scachorum'], correct: 'B' },
+      { q: "18. Which country has produced the most World Chess Champions?", a: ['A. USA', 'B. Russia/Soviet Union', 'C. Germany', 'D. India', 'E. Cuba'], correct: 'B' },
+      { q: "19. Where was the famous 1972 Fischer–Spassky match held?", a: ['A. Moscow', 'B. New York', 'C. Reykjavik', 'D. Paris', 'E. London'], correct: 'C' },
+      { q: "20. Who was the first World Champion to lose the title without playing a match?", a: ['A. Fischer', 'B. Kasparov', 'C. Karpov', 'D. Anand', 'E. Alekhine'], correct: 'A' }
+    ];
+
+    const quizForm = document.getElementById('quizForm');
+
+    questions.forEach((question, i) => {
+      const qDiv = document.createElement('div');
+      qDiv.classList.add('question');
+      qDiv.id = `q${i}`;
+      qDiv.innerHTML = `<p>${question.q}</p>`;
+      question.a.forEach(choice => {
+        const letter = choice[0];
+        qDiv.innerHTML += `
+          <div class="choices">
+            <label>
+              <input type="radio" name="q${i}" value="${letter}" required />
+              ${choice}
+            </label>
+          </div>
+        `;
+      });
+      quizForm.appendChild(qDiv);
+    });
+
+    function submitQuiz() {
+      const formData = new FormData(quizForm);
+      let score = 0;
+
+      questions.forEach((question, i) => {
+        const userAnswer = formData.get(`q${i}`);
+        const questionDiv = document.getElementById(`q${i}`);
+        questionDiv.classList.remove('correct', 'incorrect');
+
+        if (userAnswer === question.correct) {
+          score++;
+          questionDiv.classList.add('correct');
+        } else {
+          questionDiv.classList.add('incorrect');
+          const correctText = question.a.find(choice => choice.startsWith(question.correct));
+          const wrongText = userAnswer
+            ? question.a.find(choice => choice.startsWith(userAnswer))
+            : 'No answer selected';
+          questionDiv.innerHTML += `
+            <p class="wrong-answer">Your answer: ${wrongText}</p>
+            <p class="correct-answer">Correct answer: ${correctText}</p>
+          `;
+        }
+      });
+
+      const percent = ((score / questions.length) * 100).toFixed(1);
+      document.getElementById('score').textContent = `Your score: ${score}/20 (${percent}%)`;
+    }
+  </script>
+</body>
+</html>
